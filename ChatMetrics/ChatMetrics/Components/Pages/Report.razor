@@ -1,0 +1,40 @@
+﻿@page "/report"
+@using BLL
+@using ChatMetrics.Models
+@inject IReportService ReportService
+@attribute [StreamRendering]
+
+<h3>Total Chats Reports</h3>
+
+@if (totalChatsReports == null) {
+    <p><em>Loading...</em></p>
+} else {
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Report ID</th>
+                <th>Total Chats</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var report in totalChatsReports) {
+                <tr>
+                    <td>@report.Id</td>
+                    <td>@report.TotalChats</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private IEnumerable<TotalChatsReportViewModel> totalChatsReports;
+
+    protected override async Task OnInitializedAsync() {
+        var dto = await ReportService.GetAllTotalChatsReportsAsync();
+        totalChatsReports = dto.Select(report => new TotalChatsReportViewModel {
+                Id = report.Id,
+                TotalChats = report.Total
+            });
+    }
+}
